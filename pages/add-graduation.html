@@ -337,10 +337,7 @@
                         this.pagination.total = res.data.total;//总数据量
                     });
                 },
-                // 重置表单
-                resetForm() {
-                    this.formData = {};
-                },
+
                 // 弹出添加窗口
                 handleCreate() {
                     this.resetForm();
@@ -401,7 +398,11 @@
                 },
                 // 删除
                 handleDelete(row) {
-                }
+                },
+                // 重置表单
+                resetForm() {
+                    this.formData = {};
+                },
             }
         })
     </script>
