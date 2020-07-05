@@ -362,7 +362,7 @@
                 })
                     .then(() => {
                         axios
-                            .delete("http://106.15.249.199:8083/topicsystem/admin//students/del/" + row.id)
+                            .delete("http://106.15.249.199:8083/topicsystem/admin/students/del?id=" + row.id)
                             .then((response) => {
                                 if (response.data.code === 200) {
                                     this.$message({
