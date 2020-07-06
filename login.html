@@ -1,46 +1,203 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <!-- 页面meta -->
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>传智健康</title>
-        <meta name="description" content="传智健康">
-        <meta name="keywords" content="传智健康">
-        <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
-        <!-- 引入样式 -->
-        <link rel="stylesheet" href="plugins/elementui/index.css">
-        <link rel="stylesheet" href="css/login.css">
-    </head>
-    <body class="hold-transition skin-purple sidebar-mini">
-        <div id="app">
-            <div class="login-container">
-                <div class="loginBox">
-                  <form method="post" class="login-form" action="/login.do" label-position="left">
-                      <div class="title-container">
-                        <div class="logoInfo clearfix">
-                          <em class="logo"></em>
-                        </div>
-                      </div>
-                      <div>
-                        <span class="svg-container svg-container_login">
-                          <span class="user"></span>
-                        </span>
-                        <input type="text" name="username" placeholder="请输入用户名" />
-                      </div>
-                      <div>
-                        <span class="svg-container">
-                          <span class="username"></span>
-                        </span>
-                        <input type="password" name="password" placeholder="请输入密码"/>
-                      </div>
-                      <input type="submit" style="width:100%;margin-bottom:30px;" value="登录"></input>
-                </form>
-                </div>
-              </div>
+  <head>
+    <!-- 页面meta -->
+    <meta charset="utf-8" />
+    <meta content="IE=edge" http-equiv="X-UA-Compatible" />
+    <title>传智健康</title>
+    <meta content="传智健康" name="description" />
+    <meta content="传智健康" name="keywords" />
+    <meta
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
+      name="viewport"
+    />
+    <!-- 引入样式 -->
+    <link href="plugins/elementui/index.css" rel="stylesheet" />
+    <link href="css/login.css" rel="stylesheet" />
+    <style>
+      #captchaInput {
+        width: 35%;
+      }
+
+      #captcha {
+        position: absolute;
+        left: 317px;
+        top: 155px;
+        border-radius: 8px;
+      }
+    </style>
+  </head>
+  <body class="hold-transition skin-purple sidebar-mini">
+    <div id="app">
+      <div class="login-container">
+        <div class="loginBox">
+          <el-form
+            :model="ruleForm"
+            :rules="rules"
+            class="demo-ruleForm"
+            label-width="100px"
+            ref="ruleForm"
+            status-icon
+          >
+            <el-form-item label="用户名:" prop="username">
+              <el-input
+                autocomplete="off"
+                v-model="ruleForm.username"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="密码:" prop="password">
+              <el-input
+                autocomplete="off"
+                type="password"
+                v-model="ruleForm.password"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="验证码" prop="verCode">
+              <el-input id="captchaInput" v-model.number="ruleForm.verCode" />
+            </el-form-item>
+            <!--验证码图片-->
+            <img
+              id="captcha"
+              :src="codeImg"
+              @click="updateCode"
+              alt="验证码"
+              title="点击换一张"
+            />
+            <el-form-item>
+              <el-radio label="student" v-model="radio">学生</el-radio>
+              <el-radio label="teacher" v-model="radio">教师</el-radio>
+              <el-radio label="admin" v-model="radio">管理员</el-radio>
+            </el-form-item>
+            <el-form-item>
+              <el-button @click="submitForm('ruleForm')" type="primary"
+                >登录</el-button
+              >
+              <el-button @click="resetForm('ruleForm')">重置</el-button>
+            </el-form-item>
+          </el-form>
         </div>
-    </body>
-    <!-- 引入组件库 -->
-    <script src="js/vue.js"></script>
-    <script src="plugins/elementui/index.js"></script>
+      </div>
+    </div>
+  </body>
+  <!-- 引入组件库 -->
+  <script src="js/vue.js"></script>
+  <script src="js/axios-0.18.0.js"></script>
+  <script src="plugins/elementui/index.js"></script>
+  <script>
+    let vm = new Vue({
+      el: "#app",
+      data() {
+        const verCode = (rule, value, callback) => {
+          if (!value) {
+            return callback(new Error("验证码不能为空"));
+          }
+          setTimeout(() => {
+            if (!Number.isInteger(value)) {
+              callback(new Error("请输入数字值"));
+            } else {
+              callback();
+            }
+          }, 1000);
+        };
+        const username = (rule, value, callback) => {
+          if (value === "") {
+            callback(new Error("请输入用户名"));
+          } else {
+            if (this.ruleForm.password !== "") {
+              this.$refs.ruleForm.validateField("password");
+            }
+            callback();
+          }
+        };
+        const password = (rule, value, callback) => {
+          if (value === "") {
+            callback(new Error("请输入密码"));
+          } else {
+            callback();
+          }
+        };
+        return {
+          ruleForm: {
+            username: "",
+            password: "",
+            verCode: "",
+          },
+          radio: "student",
+          rules: {
+            username: [{ validator: username, trigger: "blur" }],
+            password: [{ validator: password, trigger: "blur" }],
+            verCode: [{ validator: verCode, trigger: "blur" }],
+          },
+          codeImg: "",
+        };
+      },
+      created() {
+        axios.defaults.withCredentials = true;
+        this.updateCode();
+      },
+      methods: {
+        updateCode() {
+          let _this = this;
+          axios
+            .get(
+              `http://106.15.249.199:8083/topicsystem/captcha?=${Math.random()}`,
+              {
+                responseType: "arraybuffer",
+              }
+            )
+            .then((res) => {
+              // 后端需要的响应头中的信息参数赋值
+              //   this.captchaId = res.headers["x-ocp-captcha-id"];
+              // 转换
+              let codeImg =
+                "data:image/png;base64," +
+                btoa(
+                  new Uint8Array(res.data).reduce(
+                    (data, byte) => data + String.fromCharCode(byte),
+                    ""
+                  )
+                );
+              _this.codeImg = codeImg;
+            });
+        },
+
+        submitForm(formName) {
+          this.$refs[formName].validate((valid) => {
+            if (valid) {
+              // alert('submit!');
+              const formData = {
+                username: this.ruleForm.username,
+                password: this.ruleForm.password,
+                verCode: this.ruleForm.verCode,
+                role: this.radio,
+              };
+              axios
+                .post("http://106.15.249.199:8083/topicsystem/login/", formData)
+                .then((response) => {
+                  if (response.data.code === 200) {
+                    this.$message({
+                      message: response.data.message,
+                      type: "success",
+                    });
+                    // 存储
+                    sessionStorage.setItem("username", formData.username);
+
+                    window.location.href = "pages/index.html";
+                  } else {
+                    this.$message.error(response.data.message);
+                    // window.location.href = "pages/index.html"
+                  }
+                });
+            } else {
+              console.log("error submit!!");
+              return false;
+            }
+          });
+        },
+        resetForm(formName) {
+          this.$refs[formName].resetFields();
+        },
+      },
+    });
+  </script>
 </html>

@@ -1,10 +1,9 @@
 html,body {
-	/* overflow-y: scroll; */
 	margin: 0;
 }
 a {
-	color: #3c8dbc;
-	text-decoration:none;
+	color: white;
+	text-decoration: none;
 }
 /* new style */
 .skin-purple .main-sidebar {
@@ -30,7 +29,6 @@ a {
 .skin-purple .main-header .navbar {
 	height: 70px;
 	background: linear-gradient(to right, #0abdfe, #67f0e0);
-  /* margin-left: 230px; */
 }
 .winfo{margin-left: 230px;}
 .skin-purple .main-header .sidebar-toggle {
@@ -69,7 +67,7 @@ a {
 	background: #0abdfe;
 }
 @media (min-width: 768px) {
-	.skin-purple  .navbar-nav>li>a 
+	.skin-purple  .navbar-nav>li>a
 		{
 			padding-top: 25px;
     		padding-bottom: 25px;
@@ -108,7 +106,7 @@ a {
 	font-size: 13px;
     border-radius: 8px;
     color: #fff;
-	
+
 }
 .data span.arrowup {
 	color: #d88918;
@@ -374,7 +372,7 @@ input[type=radio]:focus {
 	outline: none
 }
 input[type="radio"]{
-	appearance: none; 
+	appearance: none;
 	-webkit-appearance: none;
 	outline: none;
 	display:none
@@ -493,7 +491,7 @@ label input[type="radio"]:checked {
 .app-container{
 	background: #fff;
 	margin: 15px 30px 15px 15px;
-	
+
 }
 .pagiantion{
 	text-align: right;
