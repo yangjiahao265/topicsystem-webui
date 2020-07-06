@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <!-- 页面meta -->
     <meta charset="utf-8">
@@ -30,7 +31,8 @@
             flex: 1 1 0%;
         }
 
-        .datatable td, .datatable th {
+        .datatable td,
+        .datatable th {
             padding: 12px 0;
             min-width: 0;
             -webkit-box-sizing: border-box;
@@ -42,217 +44,214 @@
         }
     </style>
 </head>
+
 <body class="hold-transition">
-<div id="app">
-    <div class="content-header">
-        <h1>系统管理<small>教师管理</small></h1>
-        <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
-            <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item>系统管理</el-breadcrumb-item>
-            <el-breadcrumb-item>教师管理</el-breadcrumb-item>
-        </el-breadcrumb>
-    </div>
-    <div class="app-container">
-        <div class="box">
-            <!--文件上传组件-->
-            <el-card class="box-card">
-                <div class="boxMain">
-                    <el-button style="margin-bottom: 20px;margin-right: 20px" type="primary" @click="downloadTemplate()">模板下载</el-button>
-                    <el-upload action="http://106.15.249.199:8083/topicsystem/admin/teachers/upload"
-                               name="file"
-                               :show-file-list="false"
-                               :on-success="handleSuccess"
-                               :before-upload="beforeUpload">
-                        <el-button style="margin-bottom: 20px;margin-right: 20px" type="primary">上传文件</el-button>
-                    </el-upload>
-                    <el-button style="margin-bottom: 20px;margin-right: 20px" type="primary" @click="downloadStudentsInfo()">导出所有教师信息</el-button>
-                </div>
-                <div>
-                    操作说明：请点击"模板下载"按钮获取模板文件，在模板文件中录入预约设置数据后点击"上传文件"按钮上传模板文件。
-                </div>
-            </el-card>
-            <!--模糊查询组件以及新建按钮-->
-            <div class="filter-container">
-                <el-input placeholder="教师姓名" v-model="pagination.queryString" style="width: 200px;" class="filter-item"
-                          @keyup.enter.native="handleFilter"></el-input>
-                <el-button @click="findPage()" class="dalfBut">查询</el-button>
-                <el-button type="primary" class="butT" @click="handleCreate()">新建</el-button>
-            </div>
-            <!--展示教师详情信息表单-->
-            <el-table size="small" current-row-key="id" :data="dataList" stripe highlight-current-row>
-                <el-table-column type="index" align="center" label="序号"></el-table-column>
-                <el-table-column prop="username" label="用户名" align="center"></el-table-column>
-                <el-table-column prop="realName" label="真实姓名" align="center"></el-table-column>
-                <el-table-column prop="gender" label="性别" align="center"></el-table-column>
-                <el-table-column prop="age" label="年龄" align="center"></el-table-column>
-                <el-table-column prop="degree" label="学位" align="center"></el-table-column>
-                <el-table-column label="操作" align="center" width="300">
-                    <template slot-scope="scope">
-                        <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-                        <el-button @click="handleUpdatePassword(scope.row)" size="mini" type="warning">重置密码</el-button>
-                        <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
-            <div class="pagination-container">
-                <el-pagination
-                        class="pagiantion"
-                        @current-change="handleCurrentChange"
-                        :current-page="pagination.currentPage"
-                        :page-size="pagination.pageSize"
-                        layout="total, prev, pager, next, jumper"
-                        :total="pagination.total">·
-                </el-pagination>
-            </div>
-            <!-- 新增标签弹层 -->
-            <div class="add-form">
-                <el-dialog title="新增教师信息" :visible.sync="dialogFormVisible">
-                    <el-form ref="dataAddForm" :model="formData" :rules="rules" label-position="right"
-                             label-width="100px">
-
-                        <el-row>
-                            <el-col :span="12">
-                                <el-form-item label="用户名:" prop="username">
-                                    <el-input v-model="formData.username"/>
-                                </el-form-item>
-                            </el-col>
-                            <el-col :span="12">
-                                <el-form-item label="密码:" prop="password">
-                                    <el-input v-model="formData.password"/>
-                                </el-form-item>
-                            </el-col>
-                        </el-row>
-                        <el-row>
-                            <el-col :span="12">
-                                <el-form-item label="真实姓名:" prop="realName">
-                                    <el-input v-model="formData.realName"/>
-                                </el-form-item>
-                            </el-col>
-                            <el-col :span="12">
-                                <el-form-item label="年龄:" prop="age">
-                                    <el-input v-model="formData.age"/>
-                                </el-form-item>
-                            </el-col>
-                        </el-row>
-                        <el-row>
-                            <el-col :span="12">
-                                <el-form-item label="性别:" prop="gender">
-                                    <el-select v-model="formData.gender">
-                                        <el-option label="男" value="男"></el-option>
-                                        <el-option label="女" value="女"></el-option>
-                                    </el-select>
-                                </el-form-item>
-                            </el-col>
-                            <el-col :span="12">
-                                <el-form-item label="学位:" prop="degree">
-                                    <el-select v-model="formData.degree">
-                                        <el-option label="博士" value="博士"></el-option>
-                                        <el-option label="硕士" value="硕士"></el-option>
-                                        <el-option label="博士后" value="博士后"></el-option>
-
-                                    </el-select>
-                                </el-form-item>
-                            </el-col>
-                        </el-row>
-
-                    </el-form>
-                    <div slot="footer" class="dialog-footer">
-                        <el-button @click="dialogFormVisible = false">取消</el-button>
-                        <el-button type="primary" @click="handleAdd()">确定</el-button>
+    <div id="app">
+        <div class="content-header">
+            <h1>系统管理<small>教师管理</small></h1>
+            <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
+                <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+                <el-breadcrumb-item>系统管理</el-breadcrumb-item>
+                <el-breadcrumb-item>教师管理</el-breadcrumb-item>
+            </el-breadcrumb>
+        </div>
+        <div class="app-container">
+            <div class="box">
+                <!--文件上传组件-->
+                <el-card class="box-card">
+                    <div class="boxMain">
+                        <el-button style="margin-bottom: 20px;margin-right: 20px" type="primary"
+                            @click="downloadTemplate()">模板下载</el-button>
+                        <el-upload action="http://106.15.249.199:8083/topicsystem/admin/teachers/upload" name="file"
+                            :show-file-list="false" :on-success="handleSuccess" :before-upload="beforeUpload">
+                            <el-button style="margin-bottom: 20px;margin-right: 20px" type="primary">上传文件</el-button>
+                        </el-upload>
+                        <el-button style="margin-bottom: 20px;margin-right: 20px" type="primary"
+                            @click="downloadStudentsInfo()">导出所有教师信息</el-button>
                     </div>
-                </el-dialog>
-            </div>
+                    <div>
+                        操作说明：请点击"模板下载"按钮获取模板文件，在模板文件中录入预约设置数据后点击"上传文件"按钮上传模板文件。
+                    </div>
+                </el-card>
+                <!--模糊查询组件以及新建按钮-->
+                <div class="filter-container">
+                    <el-input placeholder="教师姓名" v-model="pagination.queryString" style="width: 200px;"
+                        class="filter-item" @keyup.enter.native="handleFilter"></el-input>
+                    <el-button @click="findPage()" class="dalfBut">查询</el-button>
+                    <el-button type="primary" class="butT" @click="handleCreate()">新建</el-button>
+                </div>
+                <!--展示教师详情信息表单-->
+                <el-table size="small" current-row-key="id" :data="dataList" stripe highlight-current-row>
+                    <el-table-column type="index" align="center" label="序号"></el-table-column>
+                    <el-table-column prop="username" label="用户名" align="center"></el-table-column>
+                    <el-table-column prop="realName" label="真实姓名" align="center"></el-table-column>
+                    <el-table-column prop="gender" label="性别" align="center"></el-table-column>
+                    <el-table-column prop="age" label="年龄" align="center"></el-table-column>
+                    <el-table-column prop="degree" label="学位" align="center"></el-table-column>
+                    <el-table-column label="操作" align="center" width="300">
+                        <template slot-scope="scope">
+                            <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
+                            <el-button @click="handleUpdatePassword(scope.row)" size="mini" type="warning">重置密码
+                            </el-button>
+                            <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <div class="pagination-container">
+                    <el-pagination class="pagiantion" @current-change="handleCurrentChange"
+                        :current-page="pagination.currentPage" :page-size="pagination.pageSize"
+                        layout="total, prev, pager, next, jumper" :total="pagination.total">·
+                    </el-pagination>
+                </div>
+                <!-- 新增标签弹层 -->
+                <div class="add-form">
+                    <el-dialog title="新增教师信息" :visible.sync="dialogFormVisible">
+                        <el-form ref="dataAddForm" :model="formData" :rules="rules" label-position="right"
+                            label-width="100px">
 
-            <!-- 编辑标签弹层 -->
-            <div class="add-form">
-                <el-dialog title="编辑检查项" :visible.sync="dialogFormVisible4Edit">
-                    <el-form ref="dataEditForm" :model="formData" :rules="rules" label-position="right"
-                             label-width="100px">
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="用户名:" prop="username">
+                                        <el-input v-model="formData.username" />
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="密码:" prop="password">
+                                        <el-input v-model="formData.password" />
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="真实姓名:" prop="realName">
+                                        <el-input v-model="formData.realName" />
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="年龄:" prop="age">
+                                        <el-input v-model="formData.age" />
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="性别:" prop="gender">
+                                        <el-select v-model="formData.gender">
+                                            <el-option label="男" value="男"></el-option>
+                                            <el-option label="女" value="女"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="学位:" prop="degree">
+                                        <el-select v-model="formData.degree">
+                                            <el-option label="博士" value="博士"></el-option>
+                                            <el-option label="硕士" value="硕士"></el-option>
+                                            <el-option label="博士后" value="博士后"></el-option>
 
-                        <el-row>
-                            <el-col :span="12">
-                                <el-form-item label="用户名:" prop="username">
-                                    <el-input v-model="formData.username"/>
-                                </el-form-item>
-                            </el-col>
-                            <el-col :span="12">
-                                <el-form-item label="学位:" prop="degree">
-                                    <el-select v-model="formData.degree">
-                                        <el-option label="博士" value="博士"></el-option>
-                                        <el-option label="硕士" value="硕士"></el-option>
-                                        <el-option label="博士后" value="博士后"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
 
-                                    </el-select>
-                                </el-form-item>
-                            </el-col>
-               <!--             <el-col :span="12">
+                        </el-form>
+                        <div slot="footer" class="dialog-footer">
+                            <el-button @click="dialogFormVisible = false">取消</el-button>
+                            <el-button type="primary" @click="handleAdd()">确定</el-button>
+                        </div>
+                    </el-dialog>
+                </div>
+
+                <!-- 编辑标签弹层 -->
+                <div class="add-form">
+                    <el-dialog title="编辑检查项" :visible.sync="dialogFormVisible4Edit">
+                        <el-form ref="dataEditForm" :model="formData" :rules="rules" label-position="right"
+                            label-width="100px">
+
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="用户名:" prop="username">
+                                        <el-input v-model="formData.username" />
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="学位:" prop="degree">
+                                        <el-select v-model="formData.degree">
+                                            <el-option label="博士" value="博士"></el-option>
+                                            <el-option label="硕士" value="硕士"></el-option>
+                                            <el-option label="博士后" value="博士后"></el-option>
+
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                                <!--             <el-col :span="12">
                                 <el-form-item label="密码:" prop="password">
                                     <el-input v-model="formData.password"/>
                                 </el-form-item>
                             </el-col>-->
-                        </el-row>
-                        <el-row>
-                            <el-col :span="12">
-                                <el-form-item label="真实姓名:" prop="realName">
-                                    <el-input v-model="formData.realName"/>
-                                </el-form-item>
-                            </el-col>
-                            <el-col :span="12">
-                                <el-form-item label="年龄:" prop="age">
-                                    <el-input v-model="formData.age"/>
-                                </el-form-item>
-                            </el-col>
-                        </el-row>
-                        <el-row>
-                            <el-col :span="12">
-                                <el-form-item label="性别:" prop="gender">
-                                    <el-select v-model="formData.gender">
-                                        <el-option label="男" value="男"></el-option>
-                                        <el-option label="女" value="女"></el-option>
-                                    </el-select>
-                                </el-form-item>
-                            </el-col>
-                           
-                        </el-row>
+                            </el-row>
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="真实姓名:" prop="realName">
+                                        <el-input v-model="formData.realName" />
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="年龄:" prop="age">
+                                        <el-input v-model="formData.age" />
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="性别:" prop="gender">
+                                        <el-select v-model="formData.gender">
+                                            <el-option label="男" value="男"></el-option>
+                                            <el-option label="女" value="女"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
 
-                    </el-form>
-                    <div slot="footer" class="dialog-footer">
-                        <el-button @click="dialogFormVisible4Edit = false">取消</el-button>
-                        <el-button type="primary" @click="handleEdit()">确定</el-button>
-                    </div>
-                </el-dialog>
-            </div>
+                            </el-row>
 
-            
-            <!-- 更新密码弹层 -->
-            <div class="edit-password--form">
-                <el-dialog :visible.sync="dialogFormVisible4EditPassword" title="更新学生密码">
-                    <el-form :model="formData" :rules="rules" label-position="right" label-width="100px"
-                             ref="dataEditForm">
+                        </el-form>
+                        <div slot="footer" class="dialog-footer">
+                            <el-button @click="dialogFormVisible4Edit = false">取消</el-button>
+                            <el-button type="primary" @click="handleEdit()">确定</el-button>
+                        </div>
+                    </el-dialog>
+                </div>
 
-                        <el-row>
-                            <el-col :span="12">
-                                <el-form-item label="新密码:" prop="password">
-                                    <el-input v-model="formData.password"/>
-                                </el-form-item>
-                            </el-col>
-                            <el-col :span="12">
-                                <el-form-item label="确认新密码:" prop="password">
-                                    <el-input v-model="formData.password"/>
-                                </el-form-item>
-                            </el-col>
-                        </el-row>
 
-                    </el-form>
-                    <div class="dialog-footer" slot="footer">
-                        <el-button @click="dialogFormVisible4EditPassword = false">取消</el-button>
-                        <el-button @click="handleEdit()" type="primary">确定</el-button>
-                    </div>
-                </el-dialog>
+                <!-- 更新密码弹层 -->
+                <div class="edit-password--form">
+                    <el-dialog :visible.sync="dialogFormVisible4EditPassword" title="更新学生密码">
+                        <el-form :model="formData" :rules="rules" label-position="right" label-width="100px"
+                            ref="dataEditForm">
+
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="新密码:" prop="password">
+                                        <el-input v-model="formData.password" />
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="确认新密码:" prop="password">
+                                        <el-input v-model="formData.password" />
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+
+                        </el-form>
+                        <div class="dialog-footer" slot="footer">
+                            <el-button @click="dialogFormVisible4EditPassword = false">取消</el-button>
+                            <el-button @click="handleEdit()" type="primary">确定</el-button>
+                        </div>
+                    </el-dialog>
+                </div>
             </div>
         </div>
     </div>
-</div>
 </body>
 <!-- 引入组件库 -->
 <script src="../../js/vue.js"></script>
@@ -289,22 +288,22 @@
             rules: {
                 //校验规则
                 username: [
-                    {required: true, message: "用户名为必填项", trigger: "blur"},
+                    { required: true, message: "用户名为必填项", trigger: "blur" },
                 ],
                 password: [
-                    {required: true, message: "密码称为必填项", trigger: "blur"},
+                    { required: true, message: "密码称为必填项", trigger: "blur" },
                 ],
                 gender: [
-                    {required: true, message: "性别称为必填项", trigger: "blur"},
+                    { required: true, message: "性别称为必填项", trigger: "blur" },
                 ],
                 degree: [
-                    {required: true, message: "学位称为必填项", trigger: "blur"},
+                    { required: true, message: "学位称为必填项", trigger: "blur" },
                 ],
                 age: [
-                    {required: true, message: "年龄称为必填项", trigger: "blur"},
+                    { required: true, message: "年龄称为必填项", trigger: "blur" },
                 ],
                 realName: [
-                    {required: true, message: "真实姓名称为必填项", trigger: "blur"},
+                    { required: true, message: "真实姓名称为必填项", trigger: "blur" },
                 ],
             },
         },
@@ -313,15 +312,44 @@
             this.findPage();
         },
         watch: {
-            'pagination.queryString': function() {
+            'pagination.queryString': function () {
                 this.findPage();
             }
         },
         methods: {
             handleUpdatePassword(row) {
-                    this.dialogFormVisible4EditPassword = true;
-                }
-                ,
+                this.$confirm('是否确定更新密码?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning',
+                    center: true,
+                })
+                    .then(() => {
+                        this.dialogFormVisible4EditPassword = true;
+                        //发送ajax请求回写数据
+                        axios
+                            .get("http://106.15.249.199:8083/topicsystem/admin/teachers/info/" + row.id)
+                            .then((response) => {
+                                //判断请求是否处理成功
+                                if (response.data.code === 200) {
+                                    //请求处理成功
+                                    this.formData = response.data.data;
+                                } else {
+                                    //请求处理失败，提示错误信息
+                                    this.$message.error(response.data.message);
+                                }
+                            });
+                    })
+                    .catch(() => {
+                        this.$message({
+                            type: "info",
+                            message: "已取消更新",
+                        });
+                    });
+
+            }
+            ,
+
             //分页查询
             findPage() {
                 //需要交给后台的当前页信息
@@ -375,24 +403,24 @@
                 //用户点击确定提交表单后执行
                 //校验表单数据是否合法
                 this.$refs["dataEditForm"].validate((valid) => {
+                    //需要交给后台的当前页信息
                     if (valid) {
                         axios
                             .put("http://106.15.249.199:8083/topicsystem/admin/teachers/update", this.formData)
                             .then((response) => {
-                                console.log(response)
-                                console.log(response.data)
                                 if (response.data.code === 200) {
                                     this.$message({
                                         type: 'success',
-                                        message: this.response.data.message
+                                        message: response.data.message
                                     });
                                 } else {
-                                    this.$message.error(this.response.data.message);
+                                    this.$message.error(response.data.message);
                                 }
                             })
                             .finally(() => {
                                 //关闭窗口
                                 this.dialogFormVisible4Edit = false;
+                                this.dialogFormVisible4EditPassword = false;
                                 //无论更新是否成功都刷新页面
                                 this.findPage();
                             });
@@ -401,12 +429,13 @@
                         return;
                     }
                 });
-            },
+            }
+            ,
+
+
             // 删除
             handleDelete(row) {
-                console.log(row)
                 //需要交给后台的当前页信息
-
                 this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
@@ -464,8 +493,7 @@
                             //请求处理失败，提示错误信息
                             this.$message.error(response.data.message);
                         }
-                    })
-                    .finally();
+                    });
             },
             //切换页码
             handleCurrentChange(currentPage) {
@@ -473,9 +501,9 @@
                 this.findPage();
             },
             //上传之前进行文件格式校验
-            beforeUpload(file){
+            beforeUpload(file) {
                 const isXLS = file.type === 'application/vnd.ms-excel';
-                if(isXLS){
+                if (isXLS) {
                     return true;
                 }
                 const isXLSX = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
@@ -486,22 +514,22 @@
                 return false;
             },
             //下载模板文件
-            downloadTemplate(){
-                window.location.href="http://106.15.249.199:8083/topicsystem/admin/teachers/template";
+            downloadTemplate() {
+                window.location.href = "http://106.15.249.199:8083/topicsystem/admin/teachers/template";
             },
             //批量导出学生信息
-            downloadStudentsInfo(){
-                window.location.href="http://106.15.249.199:8083/topicsystem/admin/teachers/download";
+            downloadStudentsInfo() {
+                window.location.href = "http://106.15.249.199:8083/topicsystem/admin/teachers/download";
             },
             //上传成功提示
             handleSuccess(response) {
                 console.log(response);
-                if(response.code === 200){
+                if (response.code === 200) {
                     this.$message({
                         message: response.message,
                         type: 'success'
                     });
-                }else{
+                } else {
                     this.$message.error(response.message);
                 }
             },

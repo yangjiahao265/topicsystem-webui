@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <!-- 页面meta -->
     <meta charset="utf-8">
@@ -30,7 +31,8 @@
             flex: 1 1 0%;
         }
 
-        .datatable td, .datatable th {
+        .datatable td,
+        .datatable th {
             padding: 12px 0;
             min-width: 0;
             -webkit-box-sizing: border-box;
@@ -42,223 +44,218 @@
         }
     </style>
 </head>
+
 <body class="hold-transition">
-<div id="app">
-    <div class="content-header">
-        <h1>系统管理<small>学生管理</small></h1>
-        <el-breadcrumb class="breadcrumb" separator-class="el-icon-arrow-right">
-            <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item>系统管理</el-breadcrumb-item>
-            <el-breadcrumb-item>学生管理</el-breadcrumb-item>
-        </el-breadcrumb>
-    </div>
-    <div class="app-container">
-        <div class="box">
-            <!--文件上传组件-->
-            <el-card class="box-card">
-                <div class="boxMain">
-                    <el-button @click="downloadTemplate()" style="margin-bottom: 20px;margin-right: 20px"
-                               type="primary">模板下载
-                    </el-button>
-                    <el-upload :before-upload="beforeUpload"
-                               :on-success="handleSuccess"
-                               :show-file-list="false"
-                               action="http://106.15.249.199:8083/topicsystem/admin/students/upload"
-                               name="file">
-                        <el-button style="margin-bottom: 20px;margin-right: 20px" type="primary">上传文件</el-button>
-                    </el-upload>
-                    <el-button @click="downloadStudentsInfo()" style="margin-bottom: 20px;margin-right: 20px"
-                               type="primary">导出所有学生信息
-                    </el-button>
+    <div id="app">
+        <div class="content-header">
+            <h1>系统管理<small>学生管理</small></h1>
+            <el-breadcrumb class="breadcrumb" separator-class="el-icon-arrow-right">
+                <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+                <el-breadcrumb-item>系统管理</el-breadcrumb-item>
+                <el-breadcrumb-item>学生管理</el-breadcrumb-item>
+            </el-breadcrumb>
+        </div>
+        <div class="app-container">
+            <div class="box">
+                <!--文件上传组件-->
+                <el-card class="box-card">
+                    <div class="boxMain">
+                        <el-button @click="downloadTemplate()" style="margin-bottom: 20px;margin-right: 20px"
+                            type="primary">模板下载
+                        </el-button>
+                        <el-upload :before-upload="beforeUpload" :on-success="handleSuccess" :show-file-list="false"
+                            action="http://106.15.249.199:8083/topicsystem/admin/students/upload" name="file">
+                            <el-button style="margin-bottom: 20px;margin-right: 20px" type="primary">上传文件</el-button>
+                        </el-upload>
+                        <el-button @click="downloadStudentsInfo()" style="margin-bottom: 20px;margin-right: 20px"
+                            type="primary">导出所有学生信息
+                        </el-button>
+                    </div>
+                    <div>
+                        操作说明：请点击"模板下载"按钮获取模板文件，在模板文件中录入预约设置数据后点击"上传文件"按钮上传模板文件。
+                    </div>
+                </el-card>
+                <!--模糊查询组件以及新建按钮-->
+                <div class="filter-container">
+                    <el-input @keyup.enter.native="handleFilter" class="filter-item" placeholder="学生姓名"
+                        style="width: 200px;" v-model="pagination.queryString"></el-input>
+                    <el-button @click="findPage()" class="dalfBut">查询</el-button>
+                    <el-button @click="handleCreate()" class="butT" type="primary">新建</el-button>
                 </div>
-                <div>
-                    操作说明：请点击"模板下载"按钮获取模板文件，在模板文件中录入预约设置数据后点击"上传文件"按钮上传模板文件。
-                </div>
-            </el-card>
-            <!--模糊查询组件以及新建按钮-->
-            <div class="filter-container">
-                <el-input @keyup.enter.native="handleFilter" class="filter-item" placeholder="学生姓名"
-                          style="width: 200px;"
-                          v-model="pagination.queryString"></el-input>
-                <el-button @click="findPage()" class="dalfBut">查询</el-button>
-                <el-button @click="handleCreate()" class="butT" type="primary">新建</el-button>
-            </div>
-            <!--展示学生详情信息表单-->
-            <el-table :data="dataList" current-row-key="id" highlight-current-row size="small" stripe>
-                <el-table-column align="center" label="序号" type="index"></el-table-column>
-                <el-table-column align="center" label="用户名" prop="username"></el-table-column><!--
+                <!--展示学生详情信息表单-->
+                <el-table :data="dataList" current-row-key="id" highlight-current-row size="small" stripe>
+                    <el-table-column align="center" label="序号" type="index"></el-table-column>
+                    <el-table-column align="center" label="用户名" prop="username"></el-table-column>
+                    <!--
                 <el-table-column align="center" label="第一志愿" prop="firstWish"></el-table-column>
                 <el-table-column align="center" label="第二志愿" prop="secondWish"></el-table-column>-->
-                <el-table-column align="center" label="真实姓名" prop="realName"></el-table-column>
-                <el-table-column align="center" label="性别" prop="gender"></el-table-column>
-                <el-table-column align="center" label="年龄" prop="age"></el-table-column>
-                <el-table-column align="center" label="专业" prop="major"></el-table-column>
-                <el-table-column align="center" label="操作" width="300">
-                    <template slot-scope="scope">
-                        <el-button @click="handleUpdate(scope.row)" size="mini" type="primary">编辑</el-button>
-                        <el-button @click="handleUpdatePassword(scope.row)" size="mini" type="warning">重置密码</el-button>
-                        <el-button @click="handleDelete(scope.row)" size="mini" type="danger">删除</el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
-            <div class="pagination-container">
-                <el-pagination
-                        :current-page="pagination.currentPage"
-                        :page-size="pagination.pageSize"
-                        :total="pagination.total"
-                        @current-change="handleCurrentChange"
-                        class="pagiantion"
+                    <el-table-column align="center" label="真实姓名" prop="realName"></el-table-column>
+                    <el-table-column align="center" label="性别" prop="gender"></el-table-column>
+                    <el-table-column align="center" label="年龄" prop="age"></el-table-column>
+                    <el-table-column align="center" label="专业" prop="major"></el-table-column>
+                    <el-table-column align="center" label="操作" width="300">
+                        <template slot-scope="scope">
+                            <el-button @click="handleUpdate(scope.row)" size="mini" type="primary">编辑</el-button>
+                            <el-button @click="handleUpdatePassword(scope.row)" size="mini" type="warning">重置密码
+                            </el-button>
+                            <el-button @click="handleDelete(scope.row)" size="mini" type="danger">删除</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <div class="pagination-container">
+                    <el-pagination :current-page="pagination.currentPage" :page-size="pagination.pageSize"
+                        :total="pagination.total" @current-change="handleCurrentChange" class="pagiantion"
                         layout="total, prev, pager, next, jumper">
-                </el-pagination>
-            </div>
-            <!-- 新增标签弹层 -->
-            <div class="add-form">
-                <el-dialog :visible.sync="dialogFormVisible" title="新增学生信息">
-                    <el-form :model="formData" :rules="rules" label-position="right" label-width="100px"
-                             ref="dataAddForm">
-                        <el-row>
-                            <el-col :span="12">
-                                <el-form-item label="用户名:" prop="username">
-                                    <el-input v-model="formData.username"/>
-                                </el-form-item>
-                            </el-col>
-                            <el-col :span="12">
-                                <el-form-item label="密码:" prop="password">
-                                    <el-input v-model="formData.password"/>
-                                </el-form-item>
-                            </el-col>
-                        </el-row>
-                        <el-row>
-                            <el-col :span="12">
-                                <el-form-item label="真实姓名:" prop="realName">
-                                    <el-input v-model="formData.realName"/>
-                                </el-form-item>
-                            </el-col>
-                            <el-col :span="12">
-                                <el-form-item label="年龄:" prop="age">
-                                    <el-input v-model="formData.age"/>
-                                </el-form-item>
-                            </el-col>
-                        </el-row>
-                        <el-row>
-                            <el-col :span="12">
-                                <el-form-item label="性别:" prop="gender">
-                                    <el-select v-model="formData.gender">
-                                        <el-option label="男" value="男"></el-option>
-                                        <el-option label="女" value="女"></el-option>
-                                    </el-select>
-                                </el-form-item>
-                            </el-col>
-                            <el-col :span="12">
-                                <el-form-item label="专业:" prop="major">
-                                    <el-select v-model="formData.major">
-                                        <el-option label="软件工程" value="软件工程"></el-option>
-                                        <el-option label="计算机科学与技术" value="计算机科学与技术"></el-option>
-                                        <el-option label="数字媒体技术" value="数字媒体技术"></el-option>
+                    </el-pagination>
+                </div>
+                <!-- 新增标签弹层 -->
+                <div class="add-form">
+                    <el-dialog :visible.sync="dialogFormVisible" title="新增学生信息">
+                        <el-form :model="formData" :rules="rules" label-position="right" label-width="100px"
+                            ref="dataAddForm">
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="用户名:" prop="username">
+                                        <el-input v-model="formData.username" />
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="密码:" prop="password">
+                                        <el-input v-model="formData.password" />
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="真实姓名:" prop="realName">
+                                        <el-input v-model="formData.realName" />
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="年龄:" prop="age">
+                                        <el-input v-model="formData.age" />
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="性别:" prop="gender">
+                                        <el-select v-model="formData.gender">
+                                            <el-option label="男" value="男"></el-option>
+                                            <el-option label="女" value="女"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="专业:" prop="major">
+                                        <el-select v-model="formData.major">
+                                            <el-option label="软件工程" value="软件工程"></el-option>
+                                            <el-option label="计算机科学与技术" value="计算机科学与技术"></el-option>
+                                            <el-option label="数字媒体技术" value="数字媒体技术"></el-option>
 
-                                    </el-select>
-                                </el-form-item>
-                            </el-col>
-                        </el-row>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
 
-                    </el-form>
-                    <div class="dialog-footer" slot="footer">
-                        <el-button @click="dialogFormVisible = false">取消</el-button>
-                        <el-button @click="handleAdd()" type="primary">确定</el-button>
-                    </div>
-                </el-dialog>
-            </div>
+                        </el-form>
+                        <div class="dialog-footer" slot="footer">
+                            <el-button @click="dialogFormVisible = false">取消</el-button>
+                            <el-button @click="handleAdd()" type="primary">确定</el-button>
+                        </div>
+                    </el-dialog>
+                </div>
 
-            <!-- 编辑标签弹层 -->
-            <div class="edit-form">
-                <el-dialog :visible.sync="dialogFormVisible4Edit" title="编辑学生信息">
-                    <el-form :model="formData" :rules="rules" label-position="right" label-width="100px"
-                             ref="dataEditForm">
+                <!-- 编辑标签弹层 -->
+                <div class="edit-form">
+                    <el-dialog :visible.sync="dialogFormVisible4Edit" title="编辑学生信息">
+                        <el-form :model="formData" :rules="rules" label-position="right" label-width="100px"
+                            ref="dataEditForm">
 
-                        <el-row>
-                            <el-col :span="12">
-                                <el-form-item label="用户名:" prop="username">
-                                    <el-input v-model="formData.username"/>
-                                </el-form-item>
-                            </el-col>
-                            <!--           <el-col :span="12">
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="用户名:" prop="username">
+                                        <el-input v-model="formData.username" />
+                                    </el-form-item>
+                                </el-col>
+                                <!--           <el-col :span="12">
                                            <el-form-item label="密码:" prop="password">
                                                <el-input v-model="formData.password"/>
                                            </el-form-item>
                                        </el-col>-->
-                            <el-col :span="12">
-                                <el-form-item label="专业:" prop="major">
-                                    <el-select v-model="formData.major">
-                                        <el-option label="软件工程" value="软件工程"></el-option>
-                                        <el-option label="计算机科学与技术" value="计算机科学与技术"></el-option>
-                                        <el-option label="数字媒体技术" value="数字媒体技术"></el-option>
+                                <el-col :span="12">
+                                    <el-form-item label="专业:" prop="major">
+                                        <el-select v-model="formData.major">
+                                            <el-option label="软件工程" value="软件工程"></el-option>
+                                            <el-option label="计算机科学与技术" value="计算机科学与技术"></el-option>
+                                            <el-option label="数字媒体技术" value="数字媒体技术"></el-option>
 
-                                    </el-select>
-                                </el-form-item>
-                            </el-col>
-                        </el-row>
-                        <el-row>
-                            <el-col :span="12">
-                                <el-form-item label="真实姓名:" prop="realName">
-                                    <el-input v-model="formData.realName"/>
-                                </el-form-item>
-                            </el-col>
-                            <el-col :span="12">
-                                <el-form-item label="性别:" prop="gender">
-                                    <el-select v-model="formData.gender">
-                                        <el-option label="男" value="男"></el-option>
-                                        <el-option label="女" value="女"></el-option>
-                                    </el-select>
-                                </el-form-item>
-                            </el-col>
-                        </el-row>
-                        <el-row>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="真实姓名:" prop="realName">
+                                        <el-input v-model="formData.realName" />
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="性别:" prop="gender">
+                                        <el-select v-model="formData.gender">
+                                            <el-option label="男" value="男"></el-option>
+                                            <el-option label="女" value="女"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                            <el-row>
 
-                            <el-col :span="12">
-                                <el-form-item label="年龄:" prop="age">
-                                    <el-input v-model="formData.age"/>
-                                </el-form-item>
-                            </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="年龄:" prop="age">
+                                        <el-input v-model="formData.age" />
+                                    </el-form-item>
+                                </el-col>
 
-                        </el-row>
+                            </el-row>
 
-                    </el-form>
-                    <div class="dialog-footer" slot="footer">
-                        <el-button @click="dialogFormVisible4Edit = false">取消</el-button>
-                        <el-button @click="handleEdit()" type="primary">确定</el-button>
-                    </div>
-                </el-dialog>
-            </div>
+                        </el-form>
+                        <div class="dialog-footer" slot="footer">
+                            <el-button @click="dialogFormVisible4Edit = false">取消</el-button>
+                            <el-button @click="handleEdit()" type="primary">确定</el-button>
+                        </div>
+                    </el-dialog>
+                </div>
 
-            <!-- 更新密码弹层 -->
-            <div class="edit-password--form">
-                <el-dialog :visible.sync="dialogFormVisible4EditPassword" title="更新学生密码">
-                    <el-form :model="formData" :rules="rules" label-position="right" label-width="100px"
-                             ref="dataEditForm">
+                <!-- 更新密码弹层 -->
+                <div class="edit-password--form">
+                    <el-dialog :visible.sync="dialogFormVisible4EditPassword" title="更新学生密码">
+                        <el-form :model="formData" :rules="rules" label-position="right" label-width="100px"
+                            ref="dataEditForm">
 
-                        <el-row>
-                            <el-col :span="12">
-                                <el-form-item label="新密码:" prop="password">
-                                    <el-input v-model="formData.password"/>
-                                </el-form-item>
-                            </el-col>
-                            <el-col :span="12">
-                                <el-form-item label="确认新密码:" prop="password">
-                                    <el-input v-model="formData.password"/>
-                                </el-form-item>
-                            </el-col>
-                        </el-row>
+                            <el-row>
+                                <el-col :span="12">
+                                    <el-form-item label="新密码:" prop="password">
+                                        <el-input v-model="formData.password" />
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="12">
+                                    <el-form-item label="确认新密码:" prop="password">
+                                        <el-input v-model="formData.password" />
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
 
-                    </el-form>
-                    <div class="dialog-footer" slot="footer">
-                        <el-button @click="dialogFormVisible4EditPassword = false">取消</el-button>
-                        <el-button @click="handleEdit()" type="primary">确定</el-button>
-                    </div>
-                </el-dialog>
+                        </el-form>
+                        <div class="dialog-footer" slot="footer">
+                            <el-button @click="dialogFormVisible4EditPassword = false">取消</el-button>
+                            <el-button @click="handleEdit()" type="primary">确定</el-button>
+                        </div>
+                    </el-dialog>
+                </div>
             </div>
         </div>
     </div>
-</div>
 </body>
 <!-- 引入组件库 -->
 <script src="../../js/vue.js"></script>
@@ -267,260 +264,287 @@
 <script src="../../js/axios-0.18.0.js"></script>
 <script>
     const vm = new Vue({
-            el: "#app",
-            data: {
-                test: "",
-                pagination: {
-                    //分页相关模型数据
-                    currentPage: 1, //当前页码
-                    pageSize: 5, //每页显示的记录数
-                    total: 6, //总记录数
-                    queryString: null, //查询条件
-                },
-                dataList: [
-                    {
-                        "id": "1702014418",
-                        "username": "1702014118",
-                        "gender": "男",
-                        "age": 18,
-                        "major": "软件工程",
-                        "realName": "杨佳豪",
-                        "firstWish": "1",
-                        "secondWish": "2",
-                    },
-
-                ], //当前页要展示的分页列表数据
-                formData: {}, //表单数据
-                dialogFormVisible: false, //增加表单是否可见
-                dialogFormVisible4Edit: false, //编辑表单是否可见
-                dialogFormVisible4EditPassword: false, //编辑密码表单是否可见
-                rules: {
-                    //校验规则
-                    username: [
-                        {required: true, message: "用户名为必填项", trigger: "blur"},
-                    ],
-                    password: [
-                        {required: true, message: "密码称为必填项", trigger: "blur"},
-                    ],
-                    gender: [
-                        {required: true, message: "性别称为必填项", trigger: "blur"},
-                    ],
-                    major: [
-                        {required: true, message: "专业称为必填项", trigger: "blur"},
-                    ],
-                    age: [
-                        {required: true, message: "年龄称为必填项", trigger: "blur"},
-                    ],
-                    realName: [
-                        {required: true, message: "真实姓名称为必填项", trigger: "blur"},
-                    ],
-                },
+        el: "#app",
+        data: {
+            test: "",
+            pagination: {
+                //分页相关模型数据
+                currentPage: 1, //当前页码
+                pageSize: 5, //每页显示的记录数
+                total: 6, //总记录数
+                queryString: null, //查询条件
             },
-            //钩子函数，VUE对象初始化完成后自动执行
-            created() {
+            dataList: [
+                {
+                    "id": "1702014418",
+                    "username": "1702014118",
+                    "gender": "男",
+                    "age": 18,
+                    "major": "软件工程",
+                    "realName": "杨佳豪",
+                    "firstWish": "1",
+                    "secondWish": "2",
+                },
+
+            ], //当前页要展示的分页列表数据
+            formData: {}, //表单数据
+            dialogFormVisible: false, //增加表单是否可见
+            dialogFormVisible4Edit: false, //编辑表单是否可见
+            dialogFormVisible4EditPassword: false, //编辑密码表单是否可见
+            rules: {
+                //校验规则
+                username: [
+                    { required: true, message: "用户名为必填项", trigger: "blur" },
+                ],
+                password: [
+                    { required: true, message: "密码称为必填项", trigger: "blur" },
+                ],
+                gender: [
+                    { required: true, message: "性别称为必填项", trigger: "blur" },
+                ],
+                major: [
+                    { required: true, message: "专业称为必填项", trigger: "blur" },
+                ],
+                age: [
+                    { required: true, message: "年龄称为必填项", trigger: "blur" },
+                ],
+                realName: [
+                    { required: true, message: "真实姓名称为必填项", trigger: "blur" },
+                ],
+            },
+        },
+        //钩子函数，VUE对象初始化完成后自动执行
+        created() {
+            this.findPage();
+        },
+        watch: {
+            'pagination.queryString': function () {
                 this.findPage();
-            },
-            watch: {
-                'pagination.queryString': function () {
-                    this.findPage();
-                }
-            },
-            methods: {
-                //分页查询
-                findPage() {
-                    //需要交给后台的当前页信息
-                    const pageInfo = {
-                        //当前页码
-                        pageNum: this.pagination.currentPage,
-                        //每页数据数量大小
-                        pageSize: this.pagination.pageSize,
-                        //查询的条件
-                        name: this.pagination.queryString,
-                    };
-                    //向后台发送ajax请求
-                    axios
-                        .post("http://106.15.249.199:8083/topicsystem/admin/students/list", pageInfo)
-                        .then((response) => {
-                            //从后台响应回的数据中获取总记录数
-                            this.pagination.total = response.data.data.total;
-                            //从后台响应回的数据中获取用于展示的数据列表
-                            this.dataList = response.data.data.list;
-                        });
-                },
-                //添加
-                handleAdd() {
-                    this.$refs["dataAddForm"].validate((valid) => {
-                        if (valid) {
-                            this.dialogFormVisible = false;
-                            axios
-                                .post("http://106.15.249.199:8083/topicsystem/admin/students/add", this.formData)
-                                .then((response) => {
-                                    if (response.data.code === 200) {
-                                        this.$message({
-                                            message: response.data.message,
-                                            type: "success",
-                                        });
-                                    } else {
-                                        this.$message.error("新增失败：" + response.data.message);
-                                    }
-                                })
-                                .finally(() => {
-                                    this.findPage();
-                                });
-                        } else {
-                            this.$message.error("提交失败");
-
-                        }
+            }
+        },
+        methods: {
+            //分页查询
+            findPage() {
+                //需要交给后台的当前页信息
+                const pageInfo = {
+                    //当前页码
+                    pageNum: this.pagination.currentPage,
+                    //每页数据数量大小
+                    pageSize: this.pagination.pageSize,
+                    //查询的条件
+                    name: this.pagination.queryString,
+                };
+                //向后台发送ajax请求
+                axios
+                    .post("http://106.15.249.199:8083/topicsystem/admin/students/list", pageInfo)
+                    .then((response) => {
+                        //从后台响应回的数据中获取总记录数
+                        this.pagination.total = response.data.data.total;
+                        //从后台响应回的数据中获取用于展示的数据列表
+                        this.dataList = response.data.data.list;
                     });
-                },
-                //编辑
-                handleEdit() {
-                    //用户点击确定提交表单后执行
-                    //校验表单数据是否合法
-                    this.$refs["dataEditForm"].validate((valid) => {
-                        if (valid) {
-                            axios
-                                .put("http://106.15.249.199:8083/topicsystem/admin/students/update", this.formData)
-                                .then((response) => {
-                                    console.log(response)
-                                    console.log(response.data)
-                                    if (response.data.code === 200) {
-                                        this.$message({
-                                            type: 'success',
-                                            message: this.response.data.message
-                                        });
-                                    } else {
-                                        this.$message.error(this.response.data.message);
-                                    }
-                                })
-                                .finally(() => {
-                                    //关闭窗口
-                                    this.dialogFormVisible4Edit = false;
-                                    //无论更新是否成功都刷新页面
-                                    this.findPage();
-                                });
-                        } else {
-                            this.$message.error("提交失败！");
-
-                        }
-                    });
-                },
-                // 删除
-                handleDelete(row) {
-                    this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消',
-                        type: 'warning',
-                        center: true,
-                    })
-                        .then(() => {
-                            const sid = {
-                                "id": row.id.toString(),
-                            };
-                            axios
-                                .post(
-                                    "http://106.15.249.199:8083/topicsystem/admin/students/del", sid)
-                                .then((response) => {
-                                    if (response.data.code === 200) {
-                                        this.$message({
-                                            type: 'success',
-                                            message: '删除成功!'
-                                        });
-                                        this.findPage();
-                                    } else {
-                                        this.$message.error(response.data.message);
-                                    }
-                                });
-                        })
-                        .catch(() => {
-                            this.$message({
-                                type: "info",
-                                message: "已取消删除",
+            },
+            //添加
+            handleAdd() {
+                this.$refs["dataAddForm"].validate((valid) => {
+                    if (valid) {
+                        this.dialogFormVisible = false;
+                        axios
+                            .post("http://106.15.249.199:8083/topicsystem/admin/students/add", this.formData)
+                            .then((response) => {
+                                if (response.data.code === 200) {
+                                    this.$message({
+                                        message: response.data.message,
+                                        type: "success",
+                                    });
+                                } else {
+                                    this.$message.error("新增失败：" + response.data.message);
+                                }
+                            })
+                            .finally(() => {
+                                this.findPage();
                             });
-                        });
-                }
-                ,
-                // 重置表单
-                resetForm() {
-                    this.formData = {};
-                }
-                ,
-                // 弹出添加窗口
-                handleCreate() {
-                    this.dialogFormVisible = true;
-                    this.resetForm();
-                }
-                ,
-                // 弹出编辑窗口
-                handleUpdate(row) {
-                    //是编辑窗口可见
-                    this.dialogFormVisible4Edit = true;
-                    //发送ajax请求回写数据
-                    axios
-                        .get("http://106.15.249.199:8083/topicsystem/admin/students/info/" + row.id)
-                        .then((response) => {
-                            //判断请求是否处理成功
-                            if (response.data.code === 200) {
-                                //请求处理成功
-                                this.formData = response.data.data;
-                            } else {
-                                //请求处理失败，提示错误信息
-                                this.$message.error(response.data.message);
-                            }
-                        });
-                }
-                ,
-                handleUpdatePassword(row) {
-                    this.dialogFormVisible4EditPassword = true;
-                }
-                ,
-                //切换页码
-                handleCurrentChange(currentPage) {
-                    this.pagination.currentPage = currentPage;
-                    this.findPage();
-                }
-                ,
-                //上传之前进行文件格式校验
-                beforeUpload(file) {
-                    const isXLS = file.type === 'application/vnd.ms-excel';
-                    if (isXLS) {
-                        return true;
-                    }
-                    const isXLSX = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-                    if (isXLSX) {
-                        return true;
-                    }
-                    this.$message.error('上传文件只能是xls或者xlsx格式!');
-                    return false;
-                }
-                ,
-                //下载模板文件
-                downloadTemplate() {
-                    window.location.href = "http://106.15.249.199:8083/topicsystem/admin/students/template";
-                }
-                ,
-                //批量导出老师信息
-                downloadStudentsInfo() {
-                    window.location.href = "http://106.15.249.199:8083/topicsystem/admin/students/download";
-                }
-                ,
-                //上传成功提示
-                handleSuccess(response) {
-                    console.log(response);
-                    if (response.code === 200) {
-                        this.$message({
-                            message: response.message,
-                            type: 'success'
-                        });
                     } else {
-                        this.$message.error(response.message);
-                    }
-                }
-                ,
+                        this.$message.error("提交失败");
 
+                    }
+                });
             },
-        })
-    ;
+            //编辑
+            handleEdit() {
+                //用户点击确定提交表单后执行
+                //校验表单数据是否合法
+                this.$refs["dataEditForm"].validate((valid) => {
+                    if (valid) {
+                        axios
+                            .put("http://106.15.249.199:8083/topicsystem/admin/students/update", this.formData)
+                            .then((response) => {
+                                if (response.data.code === 200) {
+                                    this.$message({
+                                        type: 'success',
+                                        message: response.data.message
+                                    });
+                                } else {
+                                    this.$message.error(response.data.message);
+                                }
+                            })
+                            .finally(() => {
+                                //关闭窗口
+                                this.dialogFormVisible4Edit = false;
+                                this.dialogFormVisible4EditPassword = false;
+                                //无论更新是否成功都刷新页面
+                                this.findPage();
+                            });
+                    } else {
+                        this.$message.error("提交失败！");
+
+                    }
+                });
+            },
+            // 删除
+            handleDelete(row) {
+                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning',
+                    center: true,
+                })
+                    .then(() => {
+                        const sid = {
+                            "id": row.id.toString(),
+                        };
+                        axios
+                            .post(
+                                "http://106.15.249.199:8083/topicsystem/admin/students/del", sid)
+                            .then((response) => {
+                                if (response.data.code === 200) {
+                                    this.$message({
+                                        type: 'success',
+                                        message: '删除成功!'
+                                    });
+                                    this.findPage();
+                                } else {
+                                    this.$message.error(response.data.message);
+                                }
+                            });
+                    })
+                    .catch(() => {
+                        this.$message({
+                            type: "info",
+                            message: "已取消删除",
+                        });
+                    });
+            }
+            ,
+            // 重置表单
+            resetForm() {
+                this.formData = {};
+            }
+            ,
+            // 弹出添加窗口
+            handleCreate() {
+                this.dialogFormVisible = true;
+                this.resetForm();
+            }
+            ,
+            // 弹出编辑窗口
+            handleUpdate(row) {
+                //是编辑窗口可见
+                this.dialogFormVisible4Edit = true;
+                //发送ajax请求回写数据
+                axios
+                    .get("http://106.15.249.199:8083/topicsystem/admin/students/info/" + row.id)
+                    .then((response) => {
+                        //判断请求是否处理成功
+                        if (response.data.code === 200) {
+                            //请求处理成功
+                            this.formData = response.data.data;
+                        } else {
+                            //请求处理失败，提示错误信息
+                            this.$message.error(response.data.message);
+                        }
+                    });
+            }
+            ,
+            handleUpdatePassword(row) {
+                this.$confirm('是否确定更新密码?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning',
+                    center: true,
+                })
+                    .then(() => {
+                        this.dialogFormVisible4EditPassword = true;
+                        //发送ajax请求回写数据
+                        axios
+                            .get("http://106.15.249.199:8083/topicsystem/admin/students/info/" + row.id)
+                            .then((response) => {
+                                //判断请求是否处理成功
+                                if (response.data.code === 200) {
+                                    //请求处理成功
+                                    this.formData = response.data.data;
+                                } else {
+                                    //请求处理失败，提示错误信息
+                                    this.$message.error(response.data.message);
+                                }
+                            });
+                    })
+                    .catch(() => {
+                        this.$message({
+                            type: "info",
+                            message: "已取消更新",
+                        });
+                    });
+
+            }
+            ,
+            //切换页码
+            handleCurrentChange(currentPage) {
+                this.pagination.currentPage = currentPage;
+                this.findPage();
+            }
+            ,
+            //上传之前进行文件格式校验
+            beforeUpload(file) {
+                const isXLS = file.type === 'application/vnd.ms-excel';
+                if (isXLS) {
+                    return true;
+                }
+                const isXLSX = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+                if (isXLSX) {
+                    return true;
+                }
+                this.$message.error('上传文件只能是xls或者xlsx格式!');
+                return false;
+            }
+            ,
+            //下载模板文件
+            downloadTemplate() {
+                window.location.href = "http://106.15.249.199:8083/topicsystem/admin/students/template";
+            }
+            ,
+            //批量导出老师信息
+            downloadStudentsInfo() {
+                window.location.href = "http://106.15.249.199:8083/topicsystem/admin/students/download";
+            }
+            ,
+            //上传成功提示
+            handleSuccess(response) {
+                console.log(response);
+                if (response.code === 200) {
+                    this.$message({
+                        message: response.message,
+                        type: 'success'
+                    });
+                } else {
+                    this.$message.error(response.message);
+                }
+            }
+            ,
+
+        },
+    })
+        ;
 </script>
 
 </html>
