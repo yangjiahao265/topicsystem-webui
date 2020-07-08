@@ -10,8 +10,8 @@
     <meta content="毕业设计选题系统" name="keywords">
     <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
     <!-- 引入样式 -->
-    <link href="../plugins/elementui/index.css" rel="stylesheet">
-    <!--    <link href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" rel="stylesheet">-->
+    <!--    <link href="../plugins/elementui/index.css" rel="stylesheet">-->
+    <link href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" rel="stylesheet">
     <link href="../plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link href="../css/style.css" rel="stylesheet">
     <style type="text/css">
@@ -27,18 +27,18 @@
 </head>
 
 <body class="hold-transition skin-purple sidebar-mini">
-<div id="app">
-    <el-container>
-        <el-header class="main-header" style="height:70px;">
-            <nav class="navbar">
-                <a class="logo" href="#" style="text-align:center">
+    <div id="app">
+        <el-container>
+            <el-header class="main-header" style="height:70px;">
+                <nav class="navbar">
+                    <a class="logo" href="#" style="text-align:center">
                         <span class="logo-lg" style="font-size: large; font-style: italic; background: linear-gradient(to right, red, blue);
                         -webkit-background-clip: text;
                         color: transparent;">欢迎您！{{user.role}}用户 :
                             <span v-if="user.role != '管理员'"> {{user.realName}}</span>
                             <span v-if="user.role == '管理员'"> {{user.username}}</span>
                         </span>
-                    <span style="
+                        <span style="
                         position: relative;
                         left: 887px;
                         color: cornsilk;
@@ -47,483 +47,487 @@
                         top: 2px;">
                             当前时间：{{time}}
                         </span>
-                </a>
-                <div class="right-menu">
-                    <!-- <span class="help"><i class="fa fa-exclamation-circle" aria-hidden="true"></i>帮助</span> -->
-                    <el-dropdown class="avatar-container right-menu-item" trigger="click">
-                        <div class="avatar-wrapper">
-                            <img class="user-avatar" src="../img/user2-160x160.jpg">
-                            <span v-if="user.role != '管理员'"> {{user.realName}}</span>
-                            <span v-if="user.role == '管理员'"> {{user.username}}</span>
-                        </div>
-                        <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item divided v-if="user.role != '管理员'">
-                                <span @click="handleUpdate()" style="display:block;">个人信息</span>
-                            </el-dropdown-item>
-                            <el-dropdown-item divided v-if="user.role != '管理员'">
-                                <span @click="handleUpdatePassword()" style="display:block;">修改密码</span>
-                            </el-dropdown-item>
-                            <el-dropdown-item divided>
+                    </a>
+                    <div class="right-menu">
+                        <!-- <span class="help"><i class="fa fa-exclamation-circle" aria-hidden="true"></i>帮助</span> -->
+                        <el-dropdown class="avatar-container right-menu-item" trigger="click">
+                            <div class="avatar-wrapper">
+                                <img class="user-avatar" src="../img/user2-160x160.jpg">
+                                <span v-if="user.role != '管理员'"> {{user.realName}}</span>
+                                <span v-if="user.role == '管理员'"> {{user.username}}</span>
+                            </div>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item divided v-if="user.role != '管理员'">
+                                    <span @click="handleUpdate()" style="display:block;">个人信息</span>
+                                </el-dropdown-item>
+                                <el-dropdown-item divided v-if="user.role != '管理员'">
+                                    <span @click="handleUpdatePassword()" style="display:block;">修改密码</span>
+                                </el-dropdown-item>
+                                <el-dropdown-item divided>
                                     <span style="display:block;">
                                         <span @click="logout" style="color: black">退出</span>
                                     </span>
-                            </el-dropdown-item>
-                        </el-dropdown-menu>
-                    </el-dropdown>
-                </div>
-            </nav>
-        </el-header>
-        <el-container>
-            <el-aside width="200px">
-                <el-menu>
-                    <el-submenu :index="menu.path" v-for="menu in menuList">
-                        <template slot="title">
-                            <i :class="menu.icon" class="fa"></i>
-                            {{menu.title}}
-                        </template>
-                        <template v-for="child in menu.children">
-                            <el-menu-item :index="child.path">
-                                <a :href="child.linkUrl" target="right"><i
-                                        :class="child.icon"></i>{{child.title}}</a>
-                            </el-menu-item>
-                        </template>
-                    </el-submenu>
-                </el-menu>
-            </el-aside>
+                                </el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                    </div>
+                </nav>
+            </el-header>
             <el-container>
-                <iframe class="el-main" frameborder="0" height="580px" name="right" src="admin/student-crud.html"
-                        width="100%"></iframe>
-                <!-- 编辑标签弹层 -->
-                <div class="edit-form">
-                    <el-dialog :visible.sync="dialogFormVisible4EditStudent" title="编辑学生信息">
-                        <el-form :model="formData" :rules="rules" label-position="right" label-width="100px"
-                                 ref="dataEditForm">
+                <el-aside width="200px">
+                    <el-menu>
+                        <el-submenu :index="menu.path" v-for="menu in menuList">
+                            <template slot="title">
+                                <i :class="menu.icon" class="fa"></i>
+                                {{menu.title}}
+                            </template>
+                            <template v-for="child in menu.children">
+                                <el-menu-item :index="child.path">
+                                    <a :href="child.linkUrl" target="right"><i
+                                            :class="child.icon"></i>{{child.title}}</a>
+                                </el-menu-item>
+                            </template>
+                        </el-submenu>
+                    </el-menu>
+                </el-aside>
+                <el-container>
+                    <iframe class="el-main" frameborder="0" height="580px" name="right"
+                        src="teacher/graduation-detail.html" width="88%" v-if="user.role=='教师'"></iframe>
+                    <iframe class="el-main" frameborder="0" height="580px" name="right" src="admin/student-crud.html"
+                        width="88%" v-if="user.role=='管理员'"></iframe>
+                    <iframe class="el-main" frameborder="0" height="580px" name="right"
+                        src="student/graduation-info.html" width="88%" v-if="user.role=='学生'"></iframe>
+                    <!-- 编辑标签弹层 -->
+                    <div class="edit-form">
+                        <el-dialog :visible.sync="dialogFormVisible4EditStudent" title="编辑学生信息">
+                            <el-form :model="formData" :rules="rules" label-position="right" label-width="100px"
+                                ref="dataEditForm">
 
-                            <el-row>
-                                <el-col :span="12">
-                                    <el-form-item label="用户名:" prop="username">
-                                        <el-input v-model="formData.username"/>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :span="12">
-                                    <el-form-item label="专业:" prop="major">
-                                        <el-select v-model="formData.major">
-                                            <el-option label="软件工程" value="软件工程"></el-option>
-                                            <el-option label="计算机科学与技术" value="计算机科学与技术"></el-option>
-                                            <el-option label="数字媒体技术" value="数字媒体技术"></el-option>
+                                <el-row>
+                                    <el-col :span="12">
+                                        <el-form-item label="用户名:" prop="username">
+                                            <el-input v-model="formData.username" />
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span="12">
+                                        <el-form-item label="专业:" prop="major">
+                                            <el-select v-model="formData.major">
+                                                <el-option label="软件工程" value="软件工程"></el-option>
+                                                <el-option label="计算机科学与技术" value="计算机科学与技术"></el-option>
+                                                <el-option label="数字媒体技术" value="数字媒体技术"></el-option>
 
-                                        </el-select>
-                                    </el-form-item>
-                                </el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col :span="12">
-                                    <el-form-item label="真实姓名:" prop="realName">
-                                        <el-input v-model="formData.realName"/>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :span="12">
-                                    <el-form-item label="性别:" prop="gender">
-                                        <el-select v-model="formData.gender">
-                                            <el-option label="男" value="男"></el-option>
-                                            <el-option label="女" value="女"></el-option>
-                                        </el-select>
-                                    </el-form-item>
-                                </el-col>
-                            </el-row>
-                            <el-row>
+                                            </el-select>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col :span="12">
+                                        <el-form-item label="真实姓名:" prop="realName">
+                                            <el-input v-model="formData.realName" />
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span="12">
+                                        <el-form-item label="性别:" prop="gender">
+                                            <el-select v-model="formData.gender">
+                                                <el-option label="男" value="男"></el-option>
+                                                <el-option label="女" value="女"></el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
 
-                                <el-col :span="12">
-                                    <el-form-item label="年龄:" prop="age">
-                                        <el-input v-model="formData.age"/>
-                                    </el-form-item>
-                                </el-col>
+                                    <el-col :span="12">
+                                        <el-form-item label="年龄:" prop="age">
+                                            <el-input v-model="formData.age" />
+                                        </el-form-item>
+                                    </el-col>
 
-                            </el-row>
+                                </el-row>
 
-                        </el-form>
-                        <div class="dialog-footer" slot="footer">
-                            <el-button @click="dialogFormVisible4EditStudent = false">取消</el-button>
-                            <el-button @click="handleEdit()" type="primary">确定</el-button>
-                        </div>
-                    </el-dialog>
-                </div>
+                            </el-form>
+                            <div class="dialog-footer" slot="footer">
+                                <el-button @click="dialogFormVisible4EditStudent = false">取消</el-button>
+                                <el-button @click="handleEdit()" type="primary">确定</el-button>
+                            </div>
+                        </el-dialog>
+                    </div>
 
-                <!-- 编辑标签弹层 -->
-                <div class="edit-form">
-                    <el-dialog :visible.sync="dialogFormVisible4EditTeacher" title="编辑检查项">
-                        <el-form :model="formData" :rules="rules" label-position="right" label-width="100px"
-                                 ref="dataEditForm">
+                    <!-- 编辑标签弹层 -->
+                    <div class="edit-form">
+                        <el-dialog :visible.sync="dialogFormVisible4EditTeacher" title="编辑检查项">
+                            <el-form :model="formData" :rules="rules" label-position="right" label-width="100px"
+                                ref="dataEditForm">
 
-                            <el-row>
-                                <el-col :span="12">
-                                    <el-form-item label="用户名:" prop="username">
-                                        <el-input v-model="formData.username"/>
-                                    </el-form-item>
-                                </el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col :span="12">
-                                    <el-form-item label="真实姓名:" prop="realName">
-                                        <el-input v-model="formData.realName"/>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :span="12">
-                                    <el-form-item label="年龄:" prop="age">
-                                        <el-input v-model="formData.age"/>
-                                    </el-form-item>
-                                </el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col :span="12">
-                                    <el-form-item label="性别:" prop="gender">
-                                        <el-select v-model="formData.gender">
-                                            <el-option label="男" value="男"></el-option>
-                                            <el-option label="女" value="女"></el-option>
-                                        </el-select>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :span="12">
-                                    <el-form-item label="学位:" prop="degree">
-                                        <el-select v-model="formData.degree">
-                                            <el-option label="博士" value="博士"></el-option>
-                                            <el-option label="硕士" value="硕士"></el-option>
-                                            <el-option label="博士后" value="博士后"></el-option>
+                                <el-row>
+                                    <el-col :span="12">
+                                        <el-form-item label="用户名:" prop="username">
+                                            <el-input v-model="formData.username" />
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col :span="12">
+                                        <el-form-item label="真实姓名:" prop="realName">
+                                            <el-input v-model="formData.realName" />
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span="12">
+                                        <el-form-item label="年龄:" prop="age">
+                                            <el-input v-model="formData.age" />
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col :span="12">
+                                        <el-form-item label="性别:" prop="gender">
+                                            <el-select v-model="formData.gender">
+                                                <el-option label="男" value="男"></el-option>
+                                                <el-option label="女" value="女"></el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span="12">
+                                        <el-form-item label="学位:" prop="degree">
+                                            <el-select v-model="formData.degree">
+                                                <el-option label="博士" value="博士"></el-option>
+                                                <el-option label="硕士" value="硕士"></el-option>
+                                                <el-option label="博士后" value="博士后"></el-option>
 
-                                        </el-select>
-                                    </el-form-item>
-                                </el-col>
-                            </el-row>
+                                            </el-select>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
 
-                        </el-form>
-                        <div class="dialog-footer" slot="footer">
-                            <el-button @click="dialogFormVisible4EditTeacher = false">取消</el-button>
-                            <el-button @click="handleEdit()" type="primary">确定</el-button>
-                        </div>
-                    </el-dialog>
-                </div>
-                <!-- 更新密码弹层 -->
-                <div class="edit-password--form">
-                    <el-dialog :visible.sync="dialogFormVisible4EditPassword" title="更新学生密码">
-                        <el-form :model="formData" :rules="rules" label-position="right" label-width="100px"
-                                 ref="dataEditForm">
+                            </el-form>
+                            <div class="dialog-footer" slot="footer">
+                                <el-button @click="dialogFormVisible4EditTeacher = false">取消</el-button>
+                                <el-button @click="handleEdit()" type="primary">确定</el-button>
+                            </div>
+                        </el-dialog>
+                    </div>
+                    <!-- 更新密码弹层 -->
+                    <div class="edit-password--form">
+                        <el-dialog :visible.sync="dialogFormVisible4EditPassword" title="更新学生密码">
+                            <el-form :model="formData" :rules="rules" label-position="right" label-width="100px"
+                                ref="dataEditForm">
 
-                            <el-row>
-                                <el-col :span="12">
-                                    <el-form-item label="新密码:" prop="password">
-                                        <el-input v-model="formData.password"/>
-                                    </el-form-item>
-                                </el-col>
-                                <el-col :span="12">
-                                    <el-form-item label="确认新密码:" prop="password">
-                                        <el-input v-model="formData.password"/>
-                                    </el-form-item>
-                                </el-col>
-                            </el-row>
+                                <el-row>
+                                    <el-col :span="12">
+                                        <el-form-item label="新密码:" prop="password">
+                                            <el-input v-model="formData.password" />
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span="12">
+                                        <el-form-item label="确认新密码:" prop="password">
+                                            <el-input v-model="formData.password" />
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
 
-                        </el-form>
-                        <div class="dialog-footer" slot="footer">
-                            <el-button @click="dialogFormVisible4EditPassword = false">取消</el-button>
-                            <el-button @click="handleEdit()" type="primary">确定</el-button>
-                        </div>
-                    </el-dialog>
-                </div>
+                            </el-form>
+                            <div class="dialog-footer" slot="footer">
+                                <el-button @click="dialogFormVisible4EditPassword = false">取消</el-button>
+                                <el-button @click="handleEdit()" type="primary">确定</el-button>
+                            </div>
+                        </el-dialog>
+                    </div>
+                </el-container>
             </el-container>
         </el-container>
-    </el-container>
-</div>
+    </div>
 
-<!-- 引入组件库 -->
-<script src="../js/vue.js"></script>
-<!--<script src="../plugins/elementui/index.js"></script>-->
-<script src="https://cdn.bootcdn.net/ajax/libs/element-ui/2.13.2/index.js"></script>
-<script src="../js/jquery.min.js" type="text/javascript"></script>
-<script src="../js/axios-0.18.0.js"></script>
-<script>
-    axios.defaults.withCredentials = true;
-    let vm = new Vue({
-        el: '#app',
-        data: {
-            time: null,
-            dialogFormVisible4EditStudent: false, //编辑表单是否可见
-            dialogFormVisible4EditTeacher: false,
-            dialogFormVisible4EditPassword: false, //编辑密码表单是否可见
-            //当前用户信息
-            user: {},
-            menuList: [],
-            formData: {}, //表单数据
-            rules: {
-                //校验规则
-                password: [
-                    {required: true, message: "密码称为必填项", trigger: "blur"},
-                ],
+    <!-- 引入组件库 -->
+    <script src="../js/vue.js"></script>
+    <!--<script src="../plugins/elementui/index.js"></script>-->
+    <script src="https://cdn.bootcdn.net/ajax/libs/element-ui/2.13.2/index.js"></script>
+    <script src="../js/jquery.min.js" type="text/javascript"></script>
+    <script src="../js/axios-0.18.0.js"></script>
+    <script>
+        axios.defaults.withCredentials = true;
+        let vm = new Vue({
+            el: '#app',
+            data: {
+                time: null,
+                dialogFormVisible4EditStudent: false, //编辑表单是否可见
+                dialogFormVisible4EditTeacher: false,
+                dialogFormVisible4EditPassword: false, //编辑密码表单是否可见
+                //当前用户信息
+                user: {},
+                menuList: [],
+                formData: {}, //表单数据
+                rules: {
+                    //校验规则
+                    password: [
+                        { required: true, message: "密码称为必填项", trigger: "blur" },
+                    ],
+                },
             },
-        },
-        created() {
-            let username = null;
-            try {
-                username = sessionStorage.getItem("username");
-            } catch (error) {
-                window.location.href = "../login.html";
-            }
-            //发送ajax请求，请求Controller获取当前登录用户的用户名，展示到页面中
-            axios.get("http://106.15.249.199:8083/topicsystem/info?username=" + username).then((response) => {
-                if (response.data.code === 200) {
-                    this.$message({
-                        message: "登录成功",
-                        type: "success",
-                    });
-                    try {
-                        this.user = response.data.data[username];
-                    } catch (error) {
-                        /*       window.location.href = "../login.html";
-                              this.$message.error("登录失败"); */
-                    }
-
-                    this.user.role = response.data.data.role;
-                    console.log(this.user.role);
-                    if (this.user.role == "admin") {
-                        this.user.role = '管理员';
-                        this.menuList = [
-                            {
-                                "path": "0",
-                                "title": "系统管理",
-                                "icon": "el-icon-setting",
-                                "children": [
-                                    {
-                                        "path": "/0-1",
-                                        "title": "学生管理",
-                                        "icon": "el-icon-user-solid",
-                                        "linkUrl": "./admin/student-crud.html",
-                                        "children": []
-                                    },
-                                    {
-                                        "path": "/0-2",
-                                        "title": "教师管理",
-                                        "icon": "el-icon-user",
-                                        "linkUrl": "./admin/teacher-crud.html",
-                                        "children": []
-                                    },
-
-                                ]
-                            },
-                        ]
-                    }
-                    ;
-
-                    if (this.user.role == "student") {
-                        this.user.role = '学生';
-                        this.menuList = [
-                            {
-                                "path": "0",
-                                "title": "学生毕设管理",
-                                "icon": "fa-user-md",
-                                "children": [
-                                    {
-                                        "path": "/0-1",
-                                        "title": "选择毕设",
-                                        "icon": "el-icon-s-unfold",
-                                        "linkUrl": "./student/graduation-list.html",
-                                        "children": []
-                                    },
-                                    {
-                                        "path": "/0-2",
-                                        "title": "查看毕设",
-                                        "icon": "el-icon-view",
-                                        "linkUrl": "./student/graduation-info.html",
-                                        "children": []
-                                    },
-                                ]
-                            },
-                        ]
-                    }
-                    ;
-
-                    if (this.user.role == "teacher") {
-                        this.user.role = '教师';
-                        this.menuList = [
-                            {
-                                "path": "0",
-                                "title": "老师毕设管理",
-                                "icon": "el-icon-s-custom",
-                                "children": [
-                                    {
-                                        "path": "/0-1",
-                                        "title": "添加毕业设计",
-                                        "icon": "el-icon-document-add",
-                                        "linkUrl": "add-graduation.html",
-                                        "children": []
-                                    },
-                                    {
-                                        "path": "/0-2",
-                                        "title": "查看已选毕设",
-                                        "icon": "el-icon-document-copy",
-                                        "linkUrl": "graduation-detail.html",
-                                        "children": []
-                                    },
-                                ]
-                            },
-                        ]
-                    }
-                    ;
-                } else {
-                    this.$message.error(response.data.message);
+            created() {
+                let username = null;
+                try {
+                    username = sessionStorage.getItem("username");
+                } catch (error) {
+                    window.location.href = "../login.html";
                 }
-            });
-
-            window.passUserInfo = () => {
-                return this.user;
-            };
-            setInterval(this.getTime, 500);
-        },
-        methods: {
-            getTime() {
-                this.time = this.dateFormat("YYYY-mm-dd HH:MM:SS", new Date());
-
-            },
-            dateFormat(fmt, date) {
-                let ret;
-                const opt = {
-                    "Y+": date.getFullYear().toString(),        // 年
-                    "m+": (date.getMonth() + 1).toString(),     // 月
-                    "d+": date.getDate().toString(),            // 日
-                    "H+": date.getHours().toString(),           // 时
-                    "M+": date.getMinutes().toString(),         // 分
-                    "S+": date.getSeconds().toString()          // 秒
-                    // 有其他格式化字符需求可以继续添加，必须转化成字符串
-                };
-                for (let k in opt) {
-                    ret = new RegExp("(" + k + ")").exec(fmt);
-                    if (ret) {
-                        fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
-                    }
-                    ;
-                }
-                ;
-                return fmt;
-            },
-            logout() {
-                axios.get("http://106.15.249.199:8083/topicsystem/logout").then((response) => {
+                //发送ajax请求，请求Controller获取当前登录用户的用户名，展示到页面中
+                axios.get("http://106.15.249.199:8083/topicsystem/info?username=" + username).then((response) => {
                     if (response.data.code === 200) {
-                        //请求处理成功
                         this.$message({
+                            message: "登录成功",
                             type: "success",
-                            message: response.data.message,
                         });
-                        window.location.href = "../login.html";
+                        try {
+                            this.user = response.data.data[username];
+                        } catch (error) {
+                            window.location.href = "../login.html";
+                            this.$message.error("登录失败");
+                        }
+
+                        this.user.role = response.data.data.role;
+                        console.log(this.user.role);
+                        if (this.user.role == "admin") {
+                            this.user.role = '管理员';
+                            this.menuList = [
+                                {
+                                    "path": "0",
+                                    "title": "系统管理",
+                                    "icon": "el-icon-setting",
+                                    "children": [
+                                        {
+                                            "path": "/0-1",
+                                            "title": "学生管理",
+                                            "icon": "el-icon-user-solid",
+                                            "linkUrl": "./admin/student-crud.html",
+                                            "children": []
+                                        },
+                                        {
+                                            "path": "/0-2",
+                                            "title": "教师管理",
+                                            "icon": "el-icon-user",
+                                            "linkUrl": "./admin/teacher-crud.html",
+                                            "children": []
+                                        },
+
+                                    ]
+                                },
+                            ]
+                        }
+                        ;
+
+                        if (this.user.role == "student") {
+                            this.user.role = '学生';
+                            this.menuList = [
+                                {
+                                    "path": "0",
+                                    "title": "学生毕设管理",
+                                    "icon": "fa-user-md",
+                                    "children": [
+                                        {
+                                            "path": "/0-1",
+                                            "title": "选择毕设",
+                                            "icon": "el-icon-s-unfold",
+                                            "linkUrl": "./student/graduation-list.html",
+                                            "children": []
+                                        },
+                                        {
+                                            "path": "/0-2",
+                                            "title": "查看毕设",
+                                            "icon": "el-icon-view",
+                                            "linkUrl": "./student/graduation-info.html",
+                                            "children": []
+                                        },
+                                    ]
+                                },
+                            ]
+                        }
+                        ;
+
+                        if (this.user.role == "teacher") {
+                            this.user.role = '教师';
+                            this.menuList = [
+                                {
+                                    "path": "0",
+                                    "title": "老师毕设管理",
+                                    "icon": "el-icon-s-custom",
+                                    "children": [
+                                        {
+                                            "path": "/0-1",
+                                            "title": "添加毕设",
+                                            "icon": "el-icon-document-add",
+                                            "linkUrl": "./teacher/graduation-crud.html",
+                                            "children": []
+                                        },
+                                        {
+                                            "path": "/0-2",
+                                            "title": "查看毕设",
+                                            "icon": "el-icon-document-copy",
+                                            "linkUrl": "./teacher/graduation-detail.html",
+                                            "children": []
+                                        },
+                                    ]
+                                },
+                            ]
+                        }
+                        ;
                     } else {
-                        //请求处理失败，提示错误信息
                         this.$message.error(response.data.message);
                     }
-                })
+                });
+
+                window.passUserInfo = () => {
+                    return this.user;
+                };
+                setInterval(this.getTime, 500);
             },
-            // 弹出编辑窗口
-            handleUpdate() {
-                let url = '';
-                //是编辑窗口可见
-                if (this.user.role === '学生') {
-                    this.dialogFormVisible4EditStudent = true;
-                    url = "http://106.15.249.199:8083/topicsystem/student/" + this.user.id + "/info";
+            methods: {
+                getTime() {
+                    this.time = this.dateFormat("YYYY-mm-dd HH:MM:SS", new Date());
 
-                }
-                ;
-                if (this.user.role === '教师') {
-                    this.dialogFormVisible4EditTeacher = true;
-                    url = "http://106.15.249.199:8083/topicsystem/admin/teachers/info/" + this.user.id;
-
-                }
-                ;
-                //发送ajax请求回写数据
-                axios
-                    .get(url)
-                    .then((response) => {
-                        //判断请求是否处理成功
+                },
+                dateFormat(fmt, date) {
+                    let ret;
+                    const opt = {
+                        "Y+": date.getFullYear().toString(),        // 年
+                        "m+": (date.getMonth() + 1).toString(),     // 月
+                        "d+": date.getDate().toString(),            // 日
+                        "H+": date.getHours().toString(),           // 时
+                        "M+": date.getMinutes().toString(),         // 分
+                        "S+": date.getSeconds().toString()          // 秒
+                        // 有其他格式化字符需求可以继续添加，必须转化成字符串
+                    };
+                    for (let k in opt) {
+                        ret = new RegExp("(" + k + ")").exec(fmt);
+                        if (ret) {
+                            fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+                        }
+                        ;
+                    }
+                    ;
+                    return fmt;
+                },
+                logout() {
+                    axios.get("http://106.15.249.199:8083/topicsystem/logout").then((response) => {
                         if (response.data.code === 200) {
                             //请求处理成功
-                            this.formData = response.data.data;
+                            this.$message({
+                                type: "success",
+                                message: response.data.message,
+                            });
+                            window.location.href = "../login.html";
                         } else {
                             //请求处理失败，提示错误信息
                             this.$message.error(response.data.message);
                         }
-                    });
-
-            },
-            handleUpdatePassword() {
-                this.$confirm('确定要修改密码?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning',
-                    center: true,
-                })
-                    .then(() => {
-
-                        this.dialogFormVisible4EditPassword = true;
                     })
-                    .catch(() => {
-                        this.$message({
-                            type: "info",
-                            message: "已取消更新",
-                        });
-                    });
-
-            }
-            ,
-            //编辑
-            handleEdit() {
-                //用户点击确定提交表单后执行
-                //校验表单数据是否合法
-                this.$refs["dataEditForm"].validate((valid) => {
-                    if (valid) {
-                        this.formData.id = this.user.id;
-                        let url = '';
-                        if (this.user.role === '学生') {
-                            this.dialogFormVisible4EditStudent = true;
-                            url = "http://106.15.249.199:8083/topicsystem/student/update";
-
-                        }
-                        ;
-                        if (this.user.role === '教师') {
-                            this.dialogFormVisible4EditTeacher = true;
-                            url = "http://106.15.249.199:8083/topicsystem/admin/teachers/update";
-
-                        }
-                        ;
-                        axios
-                            .put(url, this.formData)
-                            .then((response) => {
-                                if (response.data.code === 200) {
-                                    this.$message({
-                                        type: 'success',
-                                        message: response.data.message
-                                    });
-                                } else {
-                                    this.$message.error(response.data.message);
-                                }
-                            })
-                            .finally(() => {
-                                //关闭窗口
-                                this.dialogFormVisible4EditStudent = false;
-                                this.dialogFormVisible4EditPassword = false; //编辑密码表单是否可见
-                                this.dialogFormVisible4EditTeacher = false;
-                            });
-
-                    } else {
-                        this.$message.error("提交失败！");
+                },
+                // 弹出编辑窗口
+                handleUpdate() {
+                    let url = '';
+                    //是编辑窗口可见
+                    if (this.user.role === '学生') {
+                        this.dialogFormVisible4EditStudent = true;
+                        url = "http://106.15.249.199:8083/topicsystem/student/" + this.user.id + "/info";
 
                     }
-                });
-            },
-        }
+                    ;
+                    if (this.user.role === '教师') {
+                        this.dialogFormVisible4EditTeacher = true;
+                        url = "http://106.15.249.199:8083/topicsystem/admin/teachers/info/" + this.user.id;
 
-    });
+                    }
+                    ;
+                    //发送ajax请求回写数据
+                    axios
+                        .get(url)
+                        .then((response) => {
+                            //判断请求是否处理成功
+                            if (response.data.code === 200) {
+                                //请求处理成功
+                                this.formData = response.data.data;
+                            } else {
+                                //请求处理失败，提示错误信息
+                                this.$message.error(response.data.message);
+                            }
+                        });
 
-</script>
-<script>
-    $(function () {
-        const wd = 200;
-        $(".el-main").css('width', $('body').width() - wd + 'px');
-    });
-</script>
+                },
+                handleUpdatePassword() {
+                    this.$confirm('确定要修改密码?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning',
+                        center: true,
+                    })
+                        .then(() => {
+
+                            this.dialogFormVisible4EditPassword = true;
+                        })
+                        .catch(() => {
+                            this.$message({
+                                type: "info",
+                                message: "已取消更新",
+                            });
+                        });
+
+                }
+                ,
+                //编辑
+                handleEdit() {
+                    //用户点击确定提交表单后执行
+                    //校验表单数据是否合法
+                    this.$refs["dataEditForm"].validate((valid) => {
+                        if (valid) {
+                            this.formData.id = this.user.id;
+                            let url = '';
+                            if (this.user.role === '学生') {
+                                // this.dialogFormVisible4EditStudent = true;
+                                url = "http://106.15.249.199:8083/topicsystem/student/update";
+
+                            }
+                            ;
+                            if (this.user.role === '教师') {
+                                // this.dialogFormVisible4EditTeacher = true;
+                                url = "http://106.15.249.199:8083/topicsystem/admin/teachers/update";
+
+                            }
+                            ;
+                            axios
+                                .put(url, this.formData)
+                                .then((response) => {
+                                    if (response.data.code === 200) {
+                                        this.$message({
+                                            type: 'success',
+                                            message: response.data.message
+                                        });
+                                    } else {
+                                        this.$message.error(response.data.message);
+                                    }
+                                })
+                                .finally(() => {
+                                    //关闭窗口
+                                    this.dialogFormVisible4EditStudent = false;
+                                    this.dialogFormVisible4EditPassword = false; //编辑密码表单是否可见
+                                    this.dialogFormVisible4EditTeacher = false;
+                                });
+
+                        } else {
+                            this.$message.error("提交失败！");
+
+                        }
+                    });
+                },
+            }
+
+        });
+
+    </script>
+    <script>
+        $(function () {
+            const wd = 200;
+            $(".el-main").css('width', $('body').width() - wd + 'px');
+        });
+    </script>
 
 </body>
 

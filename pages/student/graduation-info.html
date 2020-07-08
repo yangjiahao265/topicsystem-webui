@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <!-- 页面meta -->
     <meta charset="utf-8">
@@ -45,24 +46,24 @@
 </head>
 
 <body class="hold-transition">
-<div id="app">
-    <div class="content-header">
-        <h1>毕业设计管理<small>查看毕业设计</small></h1>
-        <el-breadcrumb class="breadcrumb" separator-class="el-icon-arrow-right">
-            <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item>毕业设计管理</el-breadcrumb-item>
-            <el-breadcrumb-item>查看毕设信息</el-breadcrumb-item>
-        </el-breadcrumb>
-    </div>
-    <div class="app-container">
-        <div class="box">
+    <div id="app">
+        <div class="content-header">
+            <h1>毕业设计管理<small>查看毕业设计</small></h1>
+            <el-breadcrumb class="breadcrumb" separator-class="el-icon-arrow-right">
+                <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+                <el-breadcrumb-item>毕业设计管理</el-breadcrumb-item>
+                <el-breadcrumb-item>查看毕设信息</el-breadcrumb-item>
+            </el-breadcrumb>
+        </div>
+        <div class="app-container">
             <div class="box">
+                <!--            <div class="box">-->
                 <!--模糊查询组件以及新建按钮-->
-                <div class="filter-container">
+                <!--      <div class="filter-container">
                     <el-input @keyup.enter.native="handleFilter" class="filter-item" placeholder="选题名称"
                               style="width: 200px;" v-model="pagination.queryString"></el-input>
                     <el-button @click="findPage()" class="dalfBut">查询</el-button>
-                </div>
+                </div> -->
                 <!--展示学生详情信息表单-->
                 <el-table :data="dataList" current-row-key="id" highlight-current-row size="small" stripe>
                     <el-table-column align="center" label="序号" type="index"></el-table-column>
@@ -74,9 +75,16 @@
                                 <p v-if="scope.row.status=='审核中'">申请时间: {{ scope.row.admitTime }}</p>
                                 <p v-if="scope.row.status=='已取消'">取消时间: {{ scope.row.admitTime }}</p>
                                 <p v-if="scope.row.status=='已拒绝'">拒绝时间: {{ scope.row.admitTime }}</p>
-                                <p v-if="scope.row.status=='已通过'">取消时间: {{ scope.row.admitTime }}</p>
+                                <p v-if="scope.row.status=='已通过'">通过时间: {{ scope.row.admitTime }}</p>
                                 <div class="name-wrapper" slot="reference">
-                                    <el-tag size="medium">{{ scope.row.status }}</el-tag>
+                                    <!-- <el-tag size="medium">{{ scope.row.status }}</el-tag> -->
+                                    <el-tag size="medium" v-if="scope.row.status=='审核中'">{{ scope.row.status }}</el-tag>
+                                    <el-tag size="medium" v-if="scope.row.status=='已取消'" type="warning">
+                                        {{ scope.row.status }}</el-tag>
+                                    <el-tag size="medium" v-if="scope.row.status=='已拒绝'" type="danger">
+                                        {{ scope.row.status }}</el-tag>
+                                    <el-tag size="medium" v-if="scope.row.status=='已通过'" type="success">
+                                        {{ scope.row.status }}</el-tag>
                                 </div>
                             </el-popover>
                         </template>
@@ -84,26 +92,34 @@
                     <el-table-column align="center" label="操作：已通过的选题无法退选">
                         <template slot-scope="scope">
                             <el-button @click="handleUpdate(scope.row)" size="mini" type="warning"
-                                       v-if="scope.row.status=='审核中'">
+                                v-if="scope.row.status=='审核中'" :disabled="btn_status">
                                 退选选题
                             </el-button>
                             <el-button @click="handleUpdate(scope.row)" size="mini" type="primary"
-                                       v-if="scope.row.status=='已取消'">
+                                v-if="scope.row.status=='已取消'" :disabled="btn_status">
                                 重新申请
                             </el-button>
+                            <el-button @click="handleDelete(scope.row)" size="mini" type="danger"
+                                v-if="scope.row.status=='已取消' || scope.row.status=='已拒绝'">
+                                删除选题
+                            </el-button>
+                            <!--            <el-button @click="handleUpdate(scope.row)" size="mini" type="danger"
+                                v-if="scope.row.status=='已拒绝'" :disabled="btn_status">
+                                删除选题
+                            </el-button> -->
                         </template>
                     </el-table-column>
                 </el-table>
                 <div class="pagination-container">
                     <el-pagination :current-page="pagination.currentPage" :page-size="pagination.pageSize"
-                                   :total="pagination.total" @current-change="handleCurrentChange" class="pagiantion"
-                                   layout="total, prev, pager, next, jumper">
+                        :total="pagination.total" @current-change="handleCurrentChange" class="pagiantion"
+                        layout="total, prev, pager, next, jumper">
                     </el-pagination>
                 </div>
             </div>
         </div>
     </div>
-</div>
+    </div>
 </body>
 <!-- 引入组件库 -->
 <script src="../../js/vue.js"></script>
@@ -114,6 +130,7 @@
     const vm = new Vue({
         el: "#app",
         data: {
+            btn_status: false,
             pagination: {
                 //分页相关模型数据
                 currentPage: 1, //当前页码
@@ -122,7 +139,6 @@
                 queryString: null, //查询条件
             },
             dataList: [], //当前页要展示的分页列表数据
-            formData: {}, //表单数据
         },
         //钩子函数，VUE对象初始化完成后自动执行
         created() {
@@ -147,8 +163,75 @@
                         //从后台响应回的数据中获取用于展示的数据列表
                         this.dataList = response.data.data;
                         this.pagination.total = this.dataList.length;
+                        for (let index = 0; index < this.dataList.length; index++) {
+                            const element = this.dataList[index];
+                            if (element.status == "已通过") {
+                                this.btn_status = true;
+                                /*              for (let index = 0; index < this.dataList.length; index++) {
+                                                 const element = this.dataList[index];
+                                                 let updateData = {
+                                                     "status": 3,
+                                                     "essayId": this.dataList[index].id,
+                                                     "studentId":  window.parent.passUserInfo().id,
+                                                 }
+                                                 axios
+                                                     .put("http://106.15.249.199:8083/topicsystem/student/reply/update", updateData)
+                                                     .then((response) => {
+                                                         //判断请求是否处理成功
+                                                         if (response.data.code === 200) {
+                                                             //请求处理成功
+                                                             this.$message({
+                                                                 type: "success",
+                                                                 message: response.data.message,
+                                                             });
+                                                         } else {
+                                                             //请求处理失败，提示错误信息
+                                                             this.$message.error(response.data.message);
+                                                         }
+                                                     });
+             
+                                             } */
+                                return;
+                            }
+                        }
                     });
             },
+            // 删除
+            handleDelete(row) {
+                this.$confirm('是否确认将该选题从列表中删除', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning',
+                    center: true,
+                })
+                    .then(() => {
+                        const delInfo = {
+                            "studentId": window.parent.passUserInfo().id,
+                            "essayId": row.id,
+                        };
+                        axios
+                            .post(
+                                "http://106.15.249.199:8083/topicsystem/student/reply/del", delInfo)
+                            .then((response) => {
+                                if (response.data.code === 200) {
+                                    this.$message({
+                                        type: 'success',
+                                        message: '删除成功!'
+                                    });
+                                    this.findPage();
+                                } else {
+                                    this.$message.error(response.data.message);
+                                }
+                            });
+                    })
+                    .catch(() => {
+                        this.$message({
+                            type: "info",
+                            message: "已取消删除",
+                        });
+                    });
+            }
+            ,
             // 弹出编辑窗口
             handleUpdate(row) {
                 const cancelMessage = "是否确认退选?该操作不可逆";
@@ -196,8 +279,8 @@
                                         this.$message.error(response.data.message);
                                     }
                                 }).finally(() => {
-                                this.findPage();
-                            });
+                                    this.findPage();
+                                });
                         } else {
                             this.$message({
                                 type: "info",
@@ -224,4 +307,5 @@
         }
     })
 </script>
+
 </html>
